@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       Map<String, dynamic> ticketData = _formKey.currentState!.value;
       Map<String, dynamic> ticket = {
-        'ticketId': ticketData['ticket_id'],
+        'ticketId': ticketData['ticket_id'] ?? HelperFunctions.generateTicketId(),
         'ticketNumber': ticketData['ticket_number'],
         'firstName': ticketData['first_name'],
         'lastName': ticketData['last_name'],
@@ -129,14 +129,18 @@ class _HomeScreenState extends State<HomeScreen> {
         'numberOfTables': ticketData['number_of_tables'],
         'qrCode': ticketData['ticket_id'],
       };
-      int numberOfSeats = int.parse(ticketData['number_of_seats']);
+      // int numberOfSeats = int.parse(ticketData['number_of_seats']);
       // from 1 to the number of seats, create a ticket for each seat
-      for (int i = 1; i < numberOfSeats; i++) {
-        ticket['number_of_seats'] = (i + 1).toString();
-        ticket['ticket_id'] = HelperFunctions.generateTicketId();
-        TicketModel ticketModel = await _createTicket(ticket);
-        logger.i(ticketModel.toJson());
-      }
+      // for (int i = 1; i < numberOfSeats; i++) {
+      //   ticket['number_of_seats'] = (i + 1).toString();
+      //   ticket['ticket_id'] = HelperFunctions.generateTicketId();
+      //   TicketModel ticketModel = await _createTicket(ticket);
+      //   logger.i(ticketModel.toJson());
+      // }
+
+      ticket['ticket_id'] = HelperFunctions.generateTicketId();
+      TicketModel ticketModel = await _createTicket(ticket);
+      logger.i(ticketModel.toJson());
 
       setState(() {
         _isSaving = false;

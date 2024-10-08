@@ -142,14 +142,14 @@ class _VerifyTicketScreenState extends State<VerifyTicketScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             CustomText(
-                              "Ticket Id :",
+                              "Ticket # :",
                               color: Theme.of(context).colorScheme.onSurface,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                             ),
                             _space,
                             CustomText(
-                              ticket?.ticketId ?? '',
+                              ticket?.ticketNumber ?? '',
                               color: Theme.of(context).colorScheme.primary,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.normal,
