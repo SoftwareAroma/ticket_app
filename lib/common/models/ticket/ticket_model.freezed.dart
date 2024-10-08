@@ -23,6 +23,7 @@ mixin _$TicketModel {
   String get firstName => throw _privateConstructorUsedError;
   String get lastName => throw _privateConstructorUsedError;
   String get ticketId => throw _privateConstructorUsedError;
+  String get ticketNumber => throw _privateConstructorUsedError;
   int get numberOfSeats => throw _privateConstructorUsedError;
   int get numberOfTables => throw _privateConstructorUsedError;
   String get qrCode => throw _privateConstructorUsedError;
@@ -48,6 +49,7 @@ abstract class $TicketModelCopyWith<$Res> {
       {String firstName,
       String lastName,
       String ticketId,
+      String ticketNumber,
       int numberOfSeats,
       int numberOfTables,
       String qrCode,
@@ -72,6 +74,7 @@ class _$TicketModelCopyWithImpl<$Res, $Val extends TicketModel>
     Object? firstName = null,
     Object? lastName = null,
     Object? ticketId = null,
+    Object? ticketNumber = null,
     Object? numberOfSeats = null,
     Object? numberOfTables = null,
     Object? qrCode = null,
@@ -89,6 +92,10 @@ class _$TicketModelCopyWithImpl<$Res, $Val extends TicketModel>
       ticketId: null == ticketId
           ? _value.ticketId
           : ticketId // ignore: cast_nullable_to_non_nullable
+              as String,
+      ticketNumber: null == ticketNumber
+          ? _value.ticketNumber
+          : ticketNumber // ignore: cast_nullable_to_non_nullable
               as String,
       numberOfSeats: null == numberOfSeats
           ? _value.numberOfSeats
@@ -122,6 +129,7 @@ abstract class _$$TicketModelImplCopyWith<$Res>
       {String firstName,
       String lastName,
       String ticketId,
+      String ticketNumber,
       int numberOfSeats,
       int numberOfTables,
       String qrCode,
@@ -144,6 +152,7 @@ class __$$TicketModelImplCopyWithImpl<$Res>
     Object? firstName = null,
     Object? lastName = null,
     Object? ticketId = null,
+    Object? ticketNumber = null,
     Object? numberOfSeats = null,
     Object? numberOfTables = null,
     Object? qrCode = null,
@@ -161,6 +170,10 @@ class __$$TicketModelImplCopyWithImpl<$Res>
       ticketId: null == ticketId
           ? _value.ticketId
           : ticketId // ignore: cast_nullable_to_non_nullable
+              as String,
+      ticketNumber: null == ticketNumber
+          ? _value.ticketNumber
+          : ticketNumber // ignore: cast_nullable_to_non_nullable
               as String,
       numberOfSeats: null == numberOfSeats
           ? _value.numberOfSeats
@@ -189,6 +202,7 @@ class _$TicketModelImpl implements _TicketModel {
       {required this.firstName,
       required this.lastName,
       required this.ticketId,
+      required this.ticketNumber,
       required this.numberOfSeats,
       required this.numberOfTables,
       required this.qrCode,
@@ -204,6 +218,8 @@ class _$TicketModelImpl implements _TicketModel {
   @override
   final String ticketId;
   @override
+  final String ticketNumber;
+  @override
   final int numberOfSeats;
   @override
   final int numberOfTables;
@@ -214,7 +230,7 @@ class _$TicketModelImpl implements _TicketModel {
 
   @override
   String toString() {
-    return 'TicketModel(firstName: $firstName, lastName: $lastName, ticketId: $ticketId, numberOfSeats: $numberOfSeats, numberOfTables: $numberOfTables, qrCode: $qrCode, image: $image)';
+    return 'TicketModel(firstName: $firstName, lastName: $lastName, ticketId: $ticketId, ticketNumber: $ticketNumber, numberOfSeats: $numberOfSeats, numberOfTables: $numberOfTables, qrCode: $qrCode, image: $image)';
   }
 
   @override
@@ -228,6 +244,8 @@ class _$TicketModelImpl implements _TicketModel {
                 other.lastName == lastName) &&
             (identical(other.ticketId, ticketId) ||
                 other.ticketId == ticketId) &&
+            (identical(other.ticketNumber, ticketNumber) ||
+                other.ticketNumber == ticketNumber) &&
             (identical(other.numberOfSeats, numberOfSeats) ||
                 other.numberOfSeats == numberOfSeats) &&
             (identical(other.numberOfTables, numberOfTables) ||
@@ -239,7 +257,7 @@ class _$TicketModelImpl implements _TicketModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, firstName, lastName, ticketId,
-      numberOfSeats, numberOfTables, qrCode, image);
+      ticketNumber, numberOfSeats, numberOfTables, qrCode, image);
 
   /// Create a copy of TicketModel
   /// with the given fields replaced by the non-null parameter values.
@@ -262,6 +280,7 @@ abstract class _TicketModel implements TicketModel {
       {required final String firstName,
       required final String lastName,
       required final String ticketId,
+      required final String ticketNumber,
       required final int numberOfSeats,
       required final int numberOfTables,
       required final String qrCode,
@@ -276,6 +295,8 @@ abstract class _TicketModel implements TicketModel {
   String get lastName;
   @override
   String get ticketId;
+  @override
+  String get ticketNumber;
   @override
   int get numberOfSeats;
   @override

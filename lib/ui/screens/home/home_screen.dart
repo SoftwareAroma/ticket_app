@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
   String ticketId = '';
+  String ticketNumber = '';
 
   final List<String> _tables = <String>[
     '1',
@@ -87,6 +88,32 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
+  void _generateTicketNumber(tableNo, seatNo) {
+    ticketId = HelperFunctions.generateTicketNumber(tableNo: tableNo, seatNo: seatNo);
+    // update the state of the form field
+    _formKey.currentState?.fields['ticket_number']?.didChange(ticketId);
+    // call setState to update the UI
+    setState(() {});
+  }
+
+  _createTicket(ticketData) async {
+    Map<String, dynamic> ticketData = _formKey.currentState!.value;
+    Map<String, dynamic> ticket = {
+      'ticketId': ticketData['ticketId'],
+      'ticketNumber': HelperFunctions.generateTicketNumber(
+        tableNo: ticketData['numberOfTables'],
+        seatNo: ticketData['numberOfSeats'],
+      ),
+      'firstName': ticketData['firstName'],
+      'lastName': ticketData['lastName'],
+      'numberOfSeats': int.tryParse(ticketData['numberOfSeats']),
+      'numberOfTables': int.tryParse(ticketData['numberOfTables']),
+      'qrCode': ticketData['ticketId'],
+    };
+    TicketModel ticketModel = await helperMethods.createTicket(data: ticket);
+    return ticketModel;
+  }
+
   void _saveTicket() async {
     if (_formKey.currentState!.saveAndValidate()) {
       setState(() {
@@ -94,18 +121,27 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       Map<String, dynamic> ticketData = _formKey.currentState!.value;
       Map<String, dynamic> ticket = {
-        'ticketId': ticketData['ticket_id'] ?? HelperFunctions.generateTicketId(),
+        'ticketId': ticketData['ticket_id'],
+        'ticketNumber': ticketData['ticket_number'],
         'firstName': ticketData['first_name'],
         'lastName': ticketData['last_name'],
-        'numberOfSeats': int.tryParse(ticketData['number_of_seats']),
-        'numberOfTables': int.tryParse(ticketData['number_of_tables']),
+        'numberOfSeats': ticketData['number_of_seats'],
+        'numberOfTables': ticketData['number_of_tables'],
         'qrCode': ticketData['ticket_id'],
       };
-      TicketModel ticketModel = await helperMethods.createTicket(data: ticket);
-      logger.i(ticketModel.toJson());
+      int numberOfSeats = int.parse(ticketData['number_of_seats']);
+      // from 1 to the number of seats, create a ticket for each seat
+      for (int i = 1; i < numberOfSeats; i++) {
+        ticket['number_of_seats'] = (i + 1).toString();
+        ticket['ticket_id'] = HelperFunctions.generateTicketId();
+        TicketModel ticketModel = await _createTicket(ticket);
+        logger.i(ticketModel.toJson());
+      }
+
       setState(() {
         _isSaving = false;
       });
+      helperMethods.getTickets();
     }
   }
 
@@ -128,6 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _isSaving = false;
     _showTickets = false;
     ticketId = HelperFunctions.generateTicketId();
+    ticketNumber = HelperFunctions.generateTicketNumber(seatNo: _seats[0], tableNo: _tables[0]);
     WidgetsBinding.instance.addPostFrameCallback((Duration callback) {
       helperMethods.getTickets();
     });
@@ -187,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () => _saveTicketImg(
                                 ticketController.activeTicket == null
                                     ? ticketId
-                                    : ticketController.activeTicket!.ticketId,
+                                    : ticketController.activeTicket!.ticketNumber,
                               ),
                             ),
                           if (_showTickets)
@@ -208,148 +245,150 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     if (_showTickets)
                       Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 8.0.h,
-                            horizontal: 5.0.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(20.0.r),
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 0.5.h,
+                        child: Obx(() {
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 8.0.h,
+                              horizontal: 5.0.w,
                             ),
-                            boxShadow: const <BoxShadow>[
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 10.0,
-                                spreadRadius: 5.0,
-                                offset: Offset(0.8, 5.0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(20.0.r),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 0.5.h,
                               ),
-                            ],
-                          ),
-                          child: Column(
-                            children: <Widget>[
-                              _space,
-                              Expanded(
-                                child: ListView.separated(
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        ticketController.updateActiveTicket(ticketController.tickets[index]);
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 10.0.h,
-                                          horizontal: 5.0.w,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          // different background color for active ticket
-                                          color: ticketController.activeTicket?.ticketId ==
-                                                  ticketController.tickets[index].ticketId
-                                              ? Theme.of(context).colorScheme.primary
-                                              : Theme.of(context).colorScheme.surface,
-                                          borderRadius: BorderRadius.circular(10.0.r),
-                                          boxShadow: const <BoxShadow>[
-                                            BoxShadow(
-                                              color: Colors.black12,
-                                              blurRadius: 3.0,
-                                              spreadRadius: 2.0,
-                                              offset: Offset(0.4, 3.0),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            Expanded(
-                                              flex: 2,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  CustomText(
-                                                    "Ticket ID:",
-                                                    fontWeight: FontWeight.w900,
-                                                    color: ticketController.activeTicket?.ticketId ==
-                                                            ticketController.tickets[index].ticketId
-                                                        ? Theme.of(context).colorScheme.onPrimary
-                                                        : Theme.of(context).colorScheme.primary,
-                                                  ),
-                                                  _space,
-                                                  CustomText(
-                                                    ticketController.tickets[index].ticketId,
-                                                    color: ticketController.activeTicket?.ticketId ==
-                                                            ticketController.tickets[index].ticketId
-                                                        ? Theme.of(context).colorScheme.onPrimary
-                                                        : Theme.of(context).colorScheme.primary,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            _space,
-                                            Expanded(
-                                              child: Row(
-                                                children: <Widget>[
-                                                  CustomText(
-                                                    "Table:",
-                                                    fontWeight: FontWeight.w900,
-                                                    color: ticketController.activeTicket?.ticketId ==
-                                                            ticketController.tickets[index].ticketId
-                                                        ? Theme.of(context).colorScheme.onPrimary
-                                                        : Theme.of(context).colorScheme.primary,
-                                                  ),
-                                                  _space,
-                                                  CustomText(
-                                                    ticketController.tickets[index].numberOfTables.toString(),
-                                                    color: ticketController.activeTicket?.ticketId ==
-                                                            ticketController.tickets[index].ticketId
-                                                        ? Theme.of(context).colorScheme.onPrimary
-                                                        : Theme.of(context).colorScheme.primary,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            _space,
-                                            Expanded(
-                                              child: Row(
-                                                children: <Widget>[
-                                                  CustomText(
-                                                    "Seat:",
-                                                    fontWeight: FontWeight.w900,
-                                                    color: ticketController.activeTicket?.ticketId ==
-                                                            ticketController.tickets[index].ticketId
-                                                        ? Theme.of(context).colorScheme.onPrimary
-                                                        : Theme.of(context).colorScheme.primary,
-                                                  ),
-                                                  _space,
-                                                  CustomText(
-                                                    ticketController.tickets[index].numberOfSeats.toString(),
-                                                    color: ticketController.activeTicket?.ticketId ==
-                                                            ticketController.tickets[index].ticketId
-                                                        ? Theme.of(context).colorScheme.onPrimary
-                                                        : Theme.of(context).colorScheme.primary,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  separatorBuilder: (BuildContext context, int index) {
-                                    return Gap(15.0.h);
-                                  },
-                                  itemCount: ticketController.tickets.length,
+                              boxShadow: const <BoxShadow>[
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 10.0,
+                                  spreadRadius: 5.0,
+                                  offset: Offset(0.8, 5.0),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                              ],
+                            ),
+                            child: Column(
+                              children: <Widget>[
+                                _space,
+                                Expanded(
+                                  child: ListView.separated(
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          ticketController.updateActiveTicket(ticketController.tickets[index]);
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 10.0.h,
+                                            horizontal: 5.0.w,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            // different background color for active ticket
+                                            color: ticketController.activeTicket?.ticketId ==
+                                                    ticketController.tickets[index].ticketId
+                                                ? Theme.of(context).colorScheme.primary
+                                                : Theme.of(context).colorScheme.surface,
+                                            borderRadius: BorderRadius.circular(10.0.r),
+                                            boxShadow: const <BoxShadow>[
+                                              BoxShadow(
+                                                color: Colors.black12,
+                                                blurRadius: 3.0,
+                                                spreadRadius: 2.0,
+                                                offset: Offset(0.4, 3.0),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Expanded(
+                                                flex: 2,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    CustomText(
+                                                      "Ticket #:",
+                                                      fontWeight: FontWeight.w900,
+                                                      color: ticketController.activeTicket?.ticketNumber ==
+                                                              ticketController.tickets[index].ticketNumber
+                                                          ? Theme.of(context).colorScheme.onPrimary
+                                                          : Theme.of(context).colorScheme.primary,
+                                                    ),
+                                                    _space,
+                                                    CustomText(
+                                                      ticketController.tickets[index].ticketNumber,
+                                                      color: ticketController.activeTicket?.ticketNumber ==
+                                                              ticketController.tickets[index].ticketNumber
+                                                          ? Theme.of(context).colorScheme.onPrimary
+                                                          : Theme.of(context).colorScheme.primary,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              _space,
+                                              Expanded(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    CustomText(
+                                                      "Table:",
+                                                      fontWeight: FontWeight.w900,
+                                                      color: ticketController.activeTicket?.ticketId ==
+                                                              ticketController.tickets[index].ticketId
+                                                          ? Theme.of(context).colorScheme.onPrimary
+                                                          : Theme.of(context).colorScheme.primary,
+                                                    ),
+                                                    _space,
+                                                    CustomText(
+                                                      ticketController.tickets[index].numberOfTables.toString(),
+                                                      color: ticketController.activeTicket?.ticketId ==
+                                                              ticketController.tickets[index].ticketId
+                                                          ? Theme.of(context).colorScheme.onPrimary
+                                                          : Theme.of(context).colorScheme.primary,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              _space,
+                                              Expanded(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    CustomText(
+                                                      "Seat:",
+                                                      fontWeight: FontWeight.w900,
+                                                      color: ticketController.activeTicket?.ticketId ==
+                                                              ticketController.tickets[index].ticketId
+                                                          ? Theme.of(context).colorScheme.onPrimary
+                                                          : Theme.of(context).colorScheme.primary,
+                                                    ),
+                                                    _space,
+                                                    CustomText(
+                                                      ticketController.tickets[index].numberOfSeats.toString(),
+                                                      color: ticketController.activeTicket?.ticketId ==
+                                                              ticketController.tickets[index].ticketId
+                                                          ? Theme.of(context).colorScheme.onPrimary
+                                                          : Theme.of(context).colorScheme.primary,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    separatorBuilder: (BuildContext context, int index) {
+                                      return Gap(15.0.h);
+                                    },
+                                    itemCount: ticketController.tickets.length,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
                       ),
 
                     /// Ticket Form
@@ -431,9 +470,60 @@ class _HomeScreenState extends State<HomeScreen> {
                                       flex: 1,
                                       child: CustomOutlineButton(
                                         title: "GEN ID",
-                                        color: Theme.of(context).colorScheme.secondary,
-                                        textColor: Theme.of(context).colorScheme.secondary,
+                                        color: Theme.of(context).colorScheme.primary,
+                                        textColor: Theme.of(context).colorScheme.primary,
                                         onPressed: () => _generateTicketId(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                _space,
+                                Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 2,
+                                      child: FormBuilderTextField(
+                                        name: 'ticket_number',
+                                        enabled: false,
+                                        initialValue: ticketNumber,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: TextInputType.text,
+                                        decoration: InputDecoration(
+                                          labelText: "Ticket #",
+                                          prefixIcon: Icon(
+                                            LineAwesomeIcons.lock_solid,
+                                            color: Theme.of(context).colorScheme.primary,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10.0),
+                                            gapPadding: 5.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    _space,
+                                    _space,
+                                    Expanded(
+                                      flex: 1,
+                                      child: CustomOutlineButton(
+                                        title: "GEN #",
+                                        color: Theme.of(context).colorScheme.primary,
+                                        textColor: Theme.of(context).colorScheme.primary,
+                                        onPressed: () {
+                                          // save the form data
+                                          _formKey.currentState?.save();
+                                          Map<String, dynamic>? ticketData = _formKey.currentState?.value;
+                                          String? tableNo = ticketData?['number_of_tables'];
+                                          String? seatNo = ticketData?['number_of_seats'];
+                                          if (tableNo == null || seatNo == null) {
+                                            showCustomFlushBar(
+                                              context: context,
+                                              message: "Please select the number of tables and seats",
+                                            );
+                                            return;
+                                          }
+                                          _generateTicketNumber(tableNo, seatNo);
+                                        },
                                       ),
                                     ),
                                   ],
@@ -498,6 +588,39 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: <Widget>[
                                     Expanded(
                                       child: FormBuilderDropdown(
+                                        name: 'number_of_tables',
+                                        initialValue: _tables[0],
+                                        items: _tables
+                                            .map((String value) => DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                ))
+                                            .toList(),
+                                        onChanged: (String? value) {
+                                          setState(() {});
+                                        },
+                                        onSaved: (String? value) {
+                                          setState(() {});
+                                        },
+                                        decoration: InputDecoration(
+                                          labelText: "Table Number",
+                                          prefixIcon: Icon(
+                                            LineAwesomeIcons.table_solid,
+                                            color: Theme.of(context).colorScheme.primary,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10.0),
+                                            gapPadding: 5.0,
+                                          ),
+                                        ),
+                                        validator: FormBuilderValidators.compose([
+                                          FormBuilderValidators.required(),
+                                        ]),
+                                      ),
+                                    ),
+                                    _space,
+                                    Expanded(
+                                      child: FormBuilderDropdown(
                                         name: 'number_of_seats',
                                         initialValue: _seats[0],
                                         items: _seats
@@ -516,39 +639,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           labelText: "No of Seats",
                                           prefixIcon: Icon(
                                             LineAwesomeIcons.chair_solid,
-                                            color: Theme.of(context).colorScheme.primary,
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(10.0),
-                                            gapPadding: 5.0,
-                                          ),
-                                        ),
-                                        validator: FormBuilderValidators.compose([
-                                          FormBuilderValidators.required(),
-                                        ]),
-                                      ),
-                                    ),
-                                    _space,
-                                    Expanded(
-                                      child: FormBuilderDropdown(
-                                        name: 'number_of_tables',
-                                        initialValue: _tables[0],
-                                        items: _tables
-                                            .map((String value) => DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                ))
-                                            .toList(),
-                                        onChanged: (String? value) {
-                                          setState(() {});
-                                        },
-                                        onSaved: (String? value) {
-                                          setState(() {});
-                                        },
-                                        decoration: InputDecoration(
-                                          labelText: "No of Tables",
-                                          prefixIcon: Icon(
-                                            LineAwesomeIcons.table_solid,
                                             color: Theme.of(context).colorScheme.primary,
                                           ),
                                           border: OutlineInputBorder(
@@ -653,7 +743,7 @@ class TicketView extends StatelessWidget {
               left: MediaQuery.of(context).size.width * 0.245,
               child: ticketController.activeTicket == null
                   ? AutoSizeText(
-                      _formKey.currentState?.fields['ticket_id']?.value ?? "-",
+                      _formKey.currentState?.fields['ticket_number']?.value ?? "-",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -662,7 +752,7 @@ class TicketView extends StatelessWidget {
                       ),
                     )
                   : AutoSizeText(
-                      ticketController.activeTicket?.ticketId ?? "-", //$backendUrl/ticket/verify/
+                      ticketController.activeTicket?.ticketNumber ?? "-", //$backendUrl/ticket/verify/
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -701,7 +791,7 @@ class TicketView extends StatelessWidget {
               left: MediaQuery.of(context).size.width * 0.248,
               child: ticketController.activeTicket == null
                   ? AutoSizeText(
-                      _formKey.currentState?.fields['number_of_seats']?.value ?? "-",
+                      "# ${_formKey.currentState?.fields['number_of_seats']?.value ?? "-"}",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -709,7 +799,7 @@ class TicketView extends StatelessWidget {
                       ),
                     )
                   : AutoSizeText(
-                      ticketController.activeTicket?.numberOfSeats.toString() ?? "-",
+                      "# ${ticketController.activeTicket?.numberOfSeats.toString() ?? "-"}",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: Theme.of(context).colorScheme.onPrimary,

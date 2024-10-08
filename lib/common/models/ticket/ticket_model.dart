@@ -9,6 +9,7 @@ class TicketModel with _$TicketModel {
     required String firstName,
     required String lastName,
     required String ticketId,
+    required String ticketNumber,
     required int numberOfSeats,
     required int numberOfTables,
     required String qrCode,

@@ -30,4 +30,9 @@ class HelperFunctions {
     }
     return ticketId;
   }
+
+  static String generateTicketNumber({required String tableNo, required String seatNo}) {
+    // the ticket number is a combination of the table number and the seat number (e.g. T1S#2)
+    return 'T${tableNo}S#$seatNo';
+  }
 }
