@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _createTicket(ticketData) async {
-    Map<String, dynamic> ticketData = _formKey.currentState!.value;
+    // Map<String, dynamic> ticketData = _formKey.currentState!.value;
     Map<String, dynamic> ticket = {
       'ticketId': ticketData['ticketId'],
       'ticketNumber': HelperFunctions.generateTicketNumber(
@@ -110,7 +110,14 @@ class _HomeScreenState extends State<HomeScreen> {
       'numberOfTables': int.tryParse(ticketData['numberOfTables']),
       'qrCode': ticketData['ticketId'],
     };
-    TicketModel ticketModel = await helperMethods.createTicket(data: ticket);
+    TicketModel? ticketModel = await helperMethods.createTicket(data: ticket);
+    if (!mounted) return;
+    if (ticketModel == null) {
+      showCustomFlushBar(context: context, message: "Failed to create ticket");
+      setState(() {
+        _isSaving = false;
+      });
+    }
     return ticketModel;
   }
 
