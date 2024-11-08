@@ -51,7 +51,7 @@ class _VerifyTicketScreenState extends State<VerifyTicketScreen> {
 
   _saveTicket() async {
     if (id != '') {
-      bool done = await ticketController.saveScannedTicket(id);
+      bool done = await ticketController.saveScannedTicket(ticket!.id);
       if (!mounted) return;
       if (done) {
         showCustomFlushBar(
@@ -178,219 +178,221 @@ class _VerifyTicketScreenState extends State<VerifyTicketScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   if (result != null)
-                    SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  _space,
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      CustomText(
-                                        "Ticket Details".toUpperCase(),
-                                        color: Theme.of(context).colorScheme.primary,
-                                        fontSize: 16.sp,
-                                        letterSpacing: 1.4,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ],
-                                  ),
-                                  Gap(5.0.h),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    _space,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        CustomText(
+                                          "Ticket Details".toUpperCase(),
+                                          color: Theme.of(context).colorScheme.primary,
+                                          fontSize: 16.sp,
+                                          letterSpacing: 1.4,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ],
+                                    ),
+                                    Gap(5.0.h),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          height: 2.h,
+                                          width: 50.w,
+                                          color: Theme.of(context).colorScheme.primary,
+                                        ),
+                                      ],
+                                    ),
+                                    _space,
+                                    _space,
+                                    // first name
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        CustomText(
+                                          "Ticket # :",
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        _space,
+                                        CustomText(
+                                          ticket?.ticketNumber ?? '',
+                                          color: Theme.of(context).colorScheme.primary,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ],
+                                    ),
+                                    _space,
+                                    // last name
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        CustomText(
+                                          "First Name :",
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        _space,
+                                        CustomText(
+                                          ticket?.firstName ?? '',
+                                          color: Theme.of(context).colorScheme.primary,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ],
+                                    ),
+                                    _space,
+                                    // last name
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        CustomText(
+                                          "Last Name :",
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        _space,
+                                        CustomText(
+                                          ticket?.lastName ?? '',
+                                          color: Theme.of(context).colorScheme.primary,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ],
+                                    ),
+                                    _space,
+                                    if (message == '')
                                       Container(
-                                        height: 2.h,
-                                        width: 50.w,
-                                        color: Theme.of(context).colorScheme.primary,
-                                      ),
-                                    ],
-                                  ),
-                                  _space,
-                                  _space,
-                                  // first name
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      CustomText(
-                                        "Ticket # :",
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      _space,
-                                      CustomText(
-                                        ticket?.ticketNumber ?? '',
-                                        color: Theme.of(context).colorScheme.primary,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ],
-                                  ),
-                                  _space,
-                                  // last name
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      CustomText(
-                                        "First Name :",
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      _space,
-                                      CustomText(
-                                        ticket?.firstName ?? '',
-                                        color: Theme.of(context).colorScheme.primary,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ],
-                                  ),
-                                  _space,
-                                  // last name
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      CustomText(
-                                        "Last Name :",
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      _space,
-                                      CustomText(
-                                        ticket?.lastName ?? '',
-                                        color: Theme.of(context).colorScheme.primary,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ],
-                                  ),
-                                  _space,
-                                  if (message == '')
-                                    Container(
-                                      color: Colors.red.withOpacity(0.3),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 5.0.w,
-                                        vertical: 4.0.h,
-                                      ),
-                                      child: CustomText(
-                                        message,
-                                        fontSize: 18.0.sp,
-                                        maxLines: 3,
-                                        color: Theme.of(context).colorScheme.error,
-                                      ),
-                                    )
-                                ],
-                              ),
+                                        color: Colors.red.withOpacity(0.3),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 5.0.w,
+                                          vertical: 4.0.h,
+                                        ),
+                                        child: CustomText(
+                                          message,
+                                          fontSize: 18.0.sp,
+                                          maxLines: 3,
+                                          color: Theme.of(context).colorScheme.error,
+                                        ),
+                                      )
+                                  ],
+                                ),
 
-                              /// tick icon
-                              Container(
-                                padding: const EdgeInsets.all(20.0),
-                                decoration: BoxDecoration(
-                                  color: message == '' ? Colors.green.withOpacity(0.3) : Colors.red.withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(500.0),
-                                ),
-                                child: Icon(
-                                  message == '' ? LineAwesomeIcons.check_circle : LineAwesomeIcons.times_solid,
-                                  color: message == '' ? Colors.green : Colors.red,
-                                  size: 30.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Gap(10.0.h),
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                    foregroundColor: Colors.white,
+                                /// tick icon
+                                Container(
+                                  padding: const EdgeInsets.all(20.0),
+                                  decoration: BoxDecoration(
+                                    color: message == '' ? Colors.green.withOpacity(0.3) : Colors.red.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(500.0),
                                   ),
-                                  onPressed: () {
-                                    setState(() {
-                                      result = null;
-                                      id = '';
-                                      ticket = null;
-                                    });
-                                  },
-                                  child: Text(
-                                    "Clear".toUpperCase(),
-                                    style: GoogleFonts.inter(
-                                      fontSize: 18.0.sp,
+                                  child: Icon(
+                                    message == '' ? LineAwesomeIcons.check_circle : LineAwesomeIcons.times_solid,
+                                    color: message == '' ? Colors.green : Colors.red,
+                                    size: 30.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Gap(10.0.h),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
                                     ),
-                                  ),
-                                ),
-                              ),
-                              Gap(20.0.w),
-                              Expanded(
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.blue,
-                                    foregroundColor: Colors.white,
-                                  ),
-                                  onPressed: _saveTicket,
-                                  child: Text(
-                                    "Save".toUpperCase(),
-                                    style: GoogleFonts.inter(
-                                      fontSize: 18.0.sp,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          _space,
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    foregroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0.r),
-                                      side: BorderSide(
-                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                                    onPressed: () {
+                                      setState(() {
+                                        result = null;
+                                        id = '';
+                                        ticket = null;
+                                      });
+                                    },
+                                    child: Text(
+                                      "Clear".toUpperCase(),
+                                      style: GoogleFonts.inter(
+                                        fontSize: 18.0.sp,
                                       ),
                                     ),
                                   ),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return const AdmittedScreen();
-                                        },
+                                ),
+                                Gap(20.0.w),
+                                Expanded(
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    onPressed: _saveTicket,
+                                    child: Text(
+                                      "Save".toUpperCase(),
+                                      style: GoogleFonts.inter(
+                                        fontSize: 18.0.sp,
                                       ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "See Admitted".toUpperCase(),
-                                    style: GoogleFonts.inter(
-                                      fontSize: 18.0.sp,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                            _space,
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      foregroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0.r),
+                                        side: BorderSide(
+                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return const AdmittedScreen();
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "See Admitted".toUpperCase(),
+                                      style: GoogleFonts.inter(
+                                        fontSize: 18.0.sp,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   else
