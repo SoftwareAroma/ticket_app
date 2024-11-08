@@ -20,7 +20,7 @@ class HelperMethods {
         data: data,
         builder: (data) => data,
       );
-      logger.i(response);
+      // logger.i(response);
       TicketModel ticketModel = TicketModel.fromJson(response['data']);
       return ticketModel;
     } catch (e) {
@@ -79,11 +79,11 @@ class HelperMethods {
       List<TicketModel> tickets = <TicketModel>[];
       for (Map<String, dynamic> element in response['data']) {
         TicketModel ticketModel = TicketModel.fromJson(element);
-        logger.i("response: $ticketModel");
+        // logger.i("response: $ticketModel");
         tickets.add(ticketModel);
       }
       ticketController.addTickets(tickets);
-      logger.i("tickets : ${ticketController.tickets}");
+      // logger.i("tickets : ${ticketController.tickets}");
       return tickets;
     } catch (e) {
       debugPrint(e.toString());
@@ -108,7 +108,7 @@ class HelperMethods {
         data: data,
         builder: (data) => data,
       );
-      logger.i("Response from helper post data: $response");
+      logger.i("Response from helper patch data: $response");
       TicketModel ticketModel = TicketModel.fromJson(response['data']);
       return ticketModel;
     } catch (e) {

@@ -1,6 +1,6 @@
+import 'package:award_ticket/index.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:award_ticket/index.dart';
 
 class NoInternetScreen extends StatefulWidget {
   static String id = "no_internet_screen";

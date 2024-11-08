@@ -20,6 +20,7 @@ TicketModel _$TicketModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TicketModel {
+  String get id => throw _privateConstructorUsedError;
   String get firstName => throw _privateConstructorUsedError;
   String get lastName => throw _privateConstructorUsedError;
   String get ticketId => throw _privateConstructorUsedError;
@@ -46,7 +47,8 @@ abstract class $TicketModelCopyWith<$Res> {
       _$TicketModelCopyWithImpl<$Res, TicketModel>;
   @useResult
   $Res call(
-      {String firstName,
+      {String id,
+      String firstName,
       String lastName,
       String ticketId,
       String ticketNumber,
@@ -71,6 +73,7 @@ class _$TicketModelCopyWithImpl<$Res, $Val extends TicketModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? firstName = null,
     Object? lastName = null,
     Object? ticketId = null,
@@ -81,6 +84,10 @@ class _$TicketModelCopyWithImpl<$Res, $Val extends TicketModel>
     Object? image = freezed,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       firstName: null == firstName
           ? _value.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
@@ -126,7 +133,8 @@ abstract class _$$TicketModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String firstName,
+      {String id,
+      String firstName,
       String lastName,
       String ticketId,
       String ticketNumber,
@@ -149,6 +157,7 @@ class __$$TicketModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? firstName = null,
     Object? lastName = null,
     Object? ticketId = null,
@@ -159,6 +168,10 @@ class __$$TicketModelImplCopyWithImpl<$Res>
     Object? image = freezed,
   }) {
     return _then(_$TicketModelImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       firstName: null == firstName
           ? _value.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
@@ -199,7 +212,8 @@ class __$$TicketModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$TicketModelImpl implements _TicketModel {
   _$TicketModelImpl(
-      {required this.firstName,
+      {required this.id,
+      required this.firstName,
       required this.lastName,
       required this.ticketId,
       required this.ticketNumber,
@@ -211,6 +225,8 @@ class _$TicketModelImpl implements _TicketModel {
   factory _$TicketModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$TicketModelImplFromJson(json);
 
+  @override
+  final String id;
   @override
   final String firstName;
   @override
@@ -230,7 +246,7 @@ class _$TicketModelImpl implements _TicketModel {
 
   @override
   String toString() {
-    return 'TicketModel(firstName: $firstName, lastName: $lastName, ticketId: $ticketId, ticketNumber: $ticketNumber, numberOfSeats: $numberOfSeats, numberOfTables: $numberOfTables, qrCode: $qrCode, image: $image)';
+    return 'TicketModel(id: $id, firstName: $firstName, lastName: $lastName, ticketId: $ticketId, ticketNumber: $ticketNumber, numberOfSeats: $numberOfSeats, numberOfTables: $numberOfTables, qrCode: $qrCode, image: $image)';
   }
 
   @override
@@ -238,6 +254,7 @@ class _$TicketModelImpl implements _TicketModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TicketModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
@@ -256,8 +273,8 @@ class _$TicketModelImpl implements _TicketModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, firstName, lastName, ticketId,
-      ticketNumber, numberOfSeats, numberOfTables, qrCode, image);
+  int get hashCode => Object.hash(runtimeType, id, firstName, lastName,
+      ticketId, ticketNumber, numberOfSeats, numberOfTables, qrCode, image);
 
   /// Create a copy of TicketModel
   /// with the given fields replaced by the non-null parameter values.
@@ -277,7 +294,8 @@ class _$TicketModelImpl implements _TicketModel {
 
 abstract class _TicketModel implements TicketModel {
   factory _TicketModel(
-      {required final String firstName,
+      {required final String id,
+      required final String firstName,
       required final String lastName,
       required final String ticketId,
       required final String ticketNumber,
@@ -289,6 +307,8 @@ abstract class _TicketModel implements TicketModel {
   factory _TicketModel.fromJson(Map<String, dynamic> json) =
       _$TicketModelImpl.fromJson;
 
+  @override
+  String get id;
   @override
   String get firstName;
   @override

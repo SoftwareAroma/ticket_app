@@ -6,6 +6,7 @@ part 'ticket_model.g.dart';
 @freezed
 class TicketModel with _$TicketModel {
   factory TicketModel({
+    required String id,
     required String firstName,
     required String lastName,
     required String ticketId,

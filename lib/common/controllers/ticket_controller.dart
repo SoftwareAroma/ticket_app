@@ -40,7 +40,18 @@ class TicketController extends GetxController {
   }
 
   TicketModel searchTicket(String id) {
-    return _tickets.firstWhere((TicketModel ticket) => ticket.ticketId == id);
+    TicketModel model = _tickets.firstWhere((TicketModel ticket) => ticket.ticketId == id);
+    updateActiveTicket(model);
+    return model;
+  }
+
+  Future<bool> saveScannedTicket(String id) async {
+    Map<String, dynamic> ticket = {
+      'image': "scanned",
+    };
+    TicketModel? ticketModel = await helperMethods.updateTicket(id: id, data: ticket);
+    if (ticketModel == null) return false;
+    return true;
   }
 
   List<TicketModel> filterTickets(String id) {

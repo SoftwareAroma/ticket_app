@@ -8,6 +8,7 @@ part of 'ticket_model.dart';
 
 _$TicketModelImpl _$$TicketModelImplFromJson(Map<String, dynamic> json) =>
     _$TicketModelImpl(
+      id: json['id'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
       ticketId: json['ticketId'] as String,
@@ -20,6 +21,7 @@ _$TicketModelImpl _$$TicketModelImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$TicketModelImplToJson(_$TicketModelImpl instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'ticketId': instance.ticketId,

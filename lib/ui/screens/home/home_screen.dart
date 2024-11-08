@@ -598,15 +598,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Row(
                                   children: <Widget>[
                                     Expanded(
-                                      child: FormBuilderDropdown(
+                                      child: FormBuilderTextField(
                                         name: 'number_of_tables',
-                                        initialValue: _tables[0],
-                                        items: _tables
-                                            .map((String value) => DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                ))
-                                            .toList(),
+                                        initialValue: "1",
+                                        // items: _tables
+                                        //     .map((String value) => DropdownMenuItem<String>(
+                                        //           value: value,
+                                        //           child: Text(value),
+                                        //         ))
+                                        //     .toList(),
+                                        keyboardType: TextInputType.number,
                                         onChanged: (String? value) {
                                           setState(() {});
                                         },
